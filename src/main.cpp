@@ -1,14 +1,14 @@
-#include <M5Unified.h>  // M5Stack 用ライブラ
-// #include <TFT_eSPI.h>   // 描画用 ライブラリ
+#include <M5Unified.h>  // M5Stack ライブラリ
 
 // フォント関連ヘッダ
-// フォントデータを制限したい場合，必要なものだけインクルードした後"efont.h"をインクルードする
+// 使用する言語データを選択
 // #include "efontEnableAll.h"
 #include "efontEnableAscii.h"
 #include "efontEnableCJK.h"
 #include "efontEnableJa.h"
-
+// フォントデータ追加ライブラリ
 #include "efont.h"
+// M5Stack用描画ライブラリ
 #include "efontM5Stack.h"
 
 void setup() {
