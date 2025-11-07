@@ -12,21 +12,21 @@
 // Wifi
 #include <WiFi.h>
 // #include <WiFiClient.h>
-#include <WiFiMulti.h>
+// #include <WiFiMulti.h>
 
-WiFiClient client;
+// WiFiClient client;
 const char ssid[] = "Your SSID";
 const char pass[] = "Your PASS";
 
-// // mpd server
-// // by IP address
-// // const char mpdserver[] = "IP:192.168.xxx.xxx";
-// // by server name
+// mpd server
+// by IP address
+// const char mpdserver[] = "IP:192.168.xxx.xxx";
+// by server name
 // const char mpdserver[] = "moode";
-// // char mpdserver[] = "volumio";
-// // const char mpdserver[] = "smpd";
+// char mpdserver[] = "volumio";
+// const char mpdserver[] = "smpd";
 
-// //mpdport
+//mpdport
 // uint16_t mpdport = 6600;
 
 // // mDNS
@@ -34,7 +34,7 @@ const char pass[] = "Your PASS";
 
 // IPAddress mpdaddr;
 // const char hostname[] = "m5mpdclint";
-WiFiMulti WiFimulti;
+// WiFiMulti WiFimulti;
 
 // // Grobal valiables
 // String artist, partist;
@@ -53,7 +53,6 @@ WiFiMulti WiFimulti;
 
 void setup() {
   M5.begin();
-  Serial.begin(115200);
   M5.Lcd.setRotation(1);
   M5.Lcd.setCursor(0, 0);
   M5.Lcd.fillScreen(BLACK);

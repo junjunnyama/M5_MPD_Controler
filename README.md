@@ -9,6 +9,10 @@
   * ライブラリ書き換え
   * 文字色，背景色の任意変更が未実装
 
+* WiFiの設定について
+  * ルーターが2.4GHz帯で動作していることを確認  
+  ESP32は5GHz帯非対応
+
 # 参考文献
 ## 日本語表示
 <https://karakuri-musha.com/inside-technology/arduino-m5stack-efont_timer01/>
