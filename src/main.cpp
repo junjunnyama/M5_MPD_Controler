@@ -6,33 +6,70 @@
 #include "efontEnableAscii.h"
 #include "efontEnableCJK.h"
 #include "efontEnableJa.h"
-// フォントデータ追加ライブラリ
-#include "efont.h"
 // M5Stack用描画ライブラリ
 #include "efontM5Stack.h"
 
+// Wifi
+#include <WiFi.h>
+// #include <WiFiClient.h>
+#include <WiFiMulti.h>
+
+WiFiClient client;
+const char ssid[] = "Your SSID";
+const char pass[] = "Your PASS";
+
+// // mpd server
+// // by IP address
+// // const char mpdserver[] = "IP:192.168.xxx.xxx";
+// // by server name
+// const char mpdserver[] = "moode";
+// // char mpdserver[] = "volumio";
+// // const char mpdserver[] = "smpd";
+
+// //mpdport
+// uint16_t mpdport = 6600;
+
+// // mDNS
+// #include <ESPmDNS.h>
+
+// IPAddress mpdaddr;
+// const char hostname[] = "m5mpdclint";
+WiFiMulti WiFimulti;
+
+// // Grobal valiables
+// String artist, partist;
+// String title, ptitle;
+// String file, pfile;
+// String name, pname;
+
+// static volatile uint16_t shiftreset_cnt = 0, mpd_poll_cnt = 0;
+// byte shift = 0, pshift = -1;
+// boolean randomf,prandomf = false, repeatf,prepeatf = false;
+// int16_t volume, pvolume = -2;
+// int16_t playlistlength, pplaylistlength = -1,  id, pid = -1;
+// String  mpd_stat, pmpd_stat="";
+
+// Mpd icons
+
 void setup() {
   M5.begin();
-  M5.Lcd.setRotation(0);
+  Serial.begin(115200);
+  M5.Lcd.setRotation(1);
   M5.Lcd.setCursor(0, 0);
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setTextSize(2);
 
-  // M5.Lcd.println(display.getTextSizeX());
-  // M5.Lcd.println(display.getTextSizeY());
-
-  printEfont("Hello");
-  printEfont("こんにちは");
-  char buf1[16];
-  sprintf(buf1, "%.2f", M5.Lcd.getTextSizeX());
-  printEfont(buf1);
-  char buf2[16];
-  sprintf(buf2, "%.2f", M5.Lcd.getTextSizeY());
-  // printEfont(display, buf2, 0, 16*3);
-
-  // sprite.setColorDepth(16);
-  // sprite.setTextSize(1);
-  // sprite.createSprite(M5.Lcd.width(), M5.Lcd.height());
+  // WiFi connection
+  // WiFimulti.addAP(ssid, pass);
+  // while (WiFimulti.run() != WL_CONNECTED) {
+  WiFi.begin(ssid, pass);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    printEfont(".");
+  }
+  printEfont("wifi connected\n");
+  printEfont("IP address: ");
+  printEfont(WiFi.localIP().toString());
 }
 
 void loop() {
