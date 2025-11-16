@@ -13,7 +13,6 @@
 // Wifi 関連ライブラリ
 #include <WiFi.h>
 #include <WiFiClient.h>
-// #include <WiFiMulti.h>
 
 // MPD クライアントライブラリ
 #include "MPD.h"
@@ -23,15 +22,13 @@
 
 // WiFi setting
 const char ssid[] = "Your SSID";
-const char pass[] = "Your PASS";
-// WiFiClient client;
-// WiFiMulti WiFimulti;
+const char pass[] = "Your PASS";;
 
 // MPD setting
 MPD client;
 IPAddress ip;
 // mpd server by IP address
-const char mpdserver[] = "IP:192.168.xxx.xxx";
+const char mpdserver[] = "192.168.xxx.xxx";
 // mpd port
 uint16_t mpdport = 6600;
 
@@ -50,33 +47,40 @@ void setup() {
   // WiFi connection
   WiFi.begin(ssid, pass);
   while (WiFi.status() != WL_CONNECTED) {
-  // WiFimulti.addAP(ssid, pass);
-  // while (WiFimulti.run() != WL_CONNECTED) {
     delay(500);
     printEfont(".");
   }
-  printEfont("\n");
+  // printEfont("\n");
   printEfont("wifi connected\n");
-  // printEfont("IP address: ");
-  // printEfont(WiFi.localIP().toString());
   
   if (ip.fromString(mpdserver)){
-    client.setMpdServer(ip, mpdport);
-    while (!client.connectMpd()) {
+    while (!client.connectMpd(ip, mpdport)) {
       M5.Lcd.print(".");
-      delay(10);
+      delay(500);
     }
   }
+  // printEfont("\n");
+  printEfont("MPD connected\n");
 
   Serial.println("MPD connected");
   mpdStatus = client.getStatus();
-  Serial.println("Current MPD status");
-  currentSongStatus = client.getCurrentSong();
-  printEfont(mpdStatus.State + "\n");
+  printEfont(String(mpdStatus.State) + "\n");
   printEfont(String(mpdStatus.Volume) + "\n");
   printEfont(String(mpdStatus.PlaylistLen) + "\n");
-  printEfont(String(mpdStatus.Randomf) + "\n");
-  printEfont(String(mpdStatus.Repeatf) + "\n");
+  printEfont(String(mpdStatus.Random) + "\n");
+  printEfont(String(mpdStatus.Repeat) + "\n");
+  printEfont(String(mpdStatus.Single) + "\n");
+  printEfont(String(mpdStatus.PlaylistLen) + "\n");
+  printEfont(String(mpdStatus.PlayNum) + "\n");
+  printEfont(String(mpdStatus.Time) + "\n");
+  printEfont(String(mpdStatus.TotalTime) + "\n");
+  
+  Serial.println("Current MPD status");
+  currentSongStatus = client.getCurrentSong();
+  printEfont(String(currentSongStatus.Title) + "\n");
+  printEfont(String(currentSongStatus.Artist) + "\n");
+  printEfont(String(currentSongStatus.Album) + "\n");
+  printEfont(String(currentSongStatus.Time) + "\n");
 }
 
 void loop() {
