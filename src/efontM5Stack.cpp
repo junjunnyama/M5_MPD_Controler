@@ -17,8 +17,9 @@ void printEfont(char *str) {
     // 改行処理
     if( *str == '\n' ){
       // 改行
+      // posX = M5.Lcd.getCursorX();
+      posX = 0;
       posY += 16 * textsizeY;
-      posX = M5.Lcd.getCursorX();
       str++;
       continue;
     }
