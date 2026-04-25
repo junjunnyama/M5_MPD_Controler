@@ -23,6 +23,14 @@
 // M5Stack 画面用キャンバス
 M5Canvas canvas(&M5.Lcd);
 
+// タイマー用変数
+// hw_timer_t *timer = NULL;
+unsigned long times = 0;
+unsigned long prevtime = 0;
+
+// 画面の向き(0: X=-1G, 1: X=1G, 2: Y=-1G, 3: Y=1G, -1: Error)
+int dir = 0;
+
 // WiFi setting
 const char ssid[] = "Your SSID";
 const char pass[] = "Your PASS";
@@ -41,6 +49,7 @@ CurrentSongStatus currentSongStatus;
 
 // プロトタイプ宣言
 void ResetCanvas(int dir);
+int DisplayDirection();
 
 void setup() {
   M5.begin();
@@ -75,16 +84,38 @@ void setup() {
 
 void loop() {
   M5.update();
+  times = millis() - prevtime;
 
-  if (M5.BtnB.wasPressed()){
-    switch (mpdStatus.State){
-      case Play:
-        client.pouse();
-        break;
-      case Pause || Stop:
-        client.play();
-        break;
-    }
+  // 画面の向きを取得
+  if (times > 500) {
+    prevtime = millis();
+    dir = DisplayDirection();
+    ResetCanvas(dir);
+  }
+
+  // 画面の向きに合わせモード変更
+  switch (dir){
+    case 0:
+      // 楽曲情報表示モード
+      if (M5.BtnB.wasPressed()){
+        switch (mpdStatus.State){
+          case Play:
+            client.pouse();
+            break;
+          case Pause || Stop:
+            client.play();
+            break;
+        }
+      }
+      break;
+    case 1:
+      // 音量調整モード
+      
+      break;
+    case 2:
+      break;
+    case 3:
+      break;
   }
 }
 
@@ -93,4 +124,43 @@ void ResetCanvas(int dir){
   canvas.setRotation(dir);
   canvas.setCursor(0, 0);
   printEfont(&canvas, "Direction: " + String(dir) + "\n");
+}
+
+int DisplayDirection(){
+  // 加速度。センサで取得できる値の単位は[g, gravity]
+  float accX, accY, accZ = 0;
+  float Xcoord, Ycoord = 0;
+  int angle = 0;
+  int direction = 0;
+
+  // 加速度取得
+  M5.Imu.getAccelData(&accX, &accY, &accZ);
+  // printf("AccX: %f, AccY: %f, AccZ: %f\n", accX, accY, accZ);
+  Xcoord = constrain(accX, -1.0, 1.0);
+  Ycoord = constrain(accY, -1.0, 1.0);
+
+  // 角度計算
+  if (Xcoord < Ycoord) {
+    // angle = asin(Ycoord) * 180 / M_PI;
+    angle = 360 + asin(Xcoord) * 180 / M_PI;
+  } else {
+    // angle = 180 + acos(Xcoord) * 180 / M_PI;
+    angle = acos(Ycoord) * 180 / M_PI;
+  }
+  // printf("Angle: %d\n", angle);
+
+  // 方向判定
+  if (angle < 45 || angle >= 315) {
+    direction = 0;  // X=-1G
+  } else if (angle < 135) {
+    direction = 1;  // X=1G
+  } else if (angle < 225) {
+    direction = 2;  // Y=-1G
+  } else if (angle < 315) {
+    direction = 3;  // Y=1G
+  } else {
+    direction = -1;  // Error
+  }
+  
+  return direction;
 }
