@@ -71,31 +71,21 @@ void setup() {
   }
   printEfont(&canvas, "\n");
   printEfont(&canvas, "MPD connected\n");
-
-  Serial.println("MPD connected");
-  mpdStatus = client.getStatus();
-  printEfont(&canvas, String(mpdStatus.State) + "\n");
-  printEfont(&canvas, String(mpdStatus.Volume) + "\n");
-  printEfont(&canvas, String(mpdStatus.PlaylistLen) + "\n");
-  printEfont(&canvas, String(mpdStatus.Random) + "\n");
-  printEfont(&canvas, String(mpdStatus.Repeat) + "\n");
-  printEfont(&canvas, String(mpdStatus.Single) + "\n");
-  printEfont(&canvas, String(mpdStatus.PlaylistLen) + "\n");
-  printEfont(&canvas, String(mpdStatus.PlayNum) + "\n");
-  printEfont(&canvas, String(mpdStatus.Time) + "\n");
-  printEfont(&canvas, String(mpdStatus.TotalTime) + "\n");
-  
-  Serial.println("Current MPD status");
-  currentSongStatus = client.getCurrentSong();
-  printEfont(&canvas, String(currentSongStatus.Title) + "\n");
-  printEfont(&canvas, String(currentSongStatus.Artist) + "\n");
-  printEfont(&canvas, String(currentSongStatus.Album) + "\n");
-  printEfont(&canvas, String(currentSongStatus.Time) + "\n");
 }
 
 void loop() {
-  // printEfont(sprite, "Hello", 0, 16*0);
-  // printEfont(sprite, "こんにちは", 0, 16*1);
+  M5.update();
+
+  if (M5.BtnB.wasPressed()){
+    switch (mpdStatus.State){
+      case Play:
+        client.pouse();
+        break;
+      case Pause || Stop:
+        client.play();
+        break;
+    }
+  }
 }
 
 void ResetCanvas(int dir){

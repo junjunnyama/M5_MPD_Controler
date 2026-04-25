@@ -53,14 +53,19 @@ class MPD : public WiFiClient {
     
     MPDStatus MpdStatus;
     CurrentSongStatus SongStatus;
+    
+    void sendCommand(String cmd);
 
   public:
     bool connectMpd();
     bool connectMpd(IPAddress ip, uint16_t port);
+    bool getAck();
     CurrentSongStatus getCurrentSong();
     String getResponse();
     MPDStatus getStatus();
-    void sendCommand(String cmd);
+    void play();
+    void pouse();
+    void stop();
     void setMpdServer(IPAddress ip, uint16_t port);
     PlayState toPlayState(String stateStr);
 };
