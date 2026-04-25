@@ -1,4 +1,4 @@
-#include "mpd.h"
+#include "MPD.h"
 
 // M5Stack ライブラリ
 #include <M5Unified.h>
@@ -7,16 +7,13 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 
-bool MPD::connectMpd(){
-  String resp;
+void MPD::sendCommand(String cmd){
+  this->println(cmd);
+}
 
+bool MPD::connectMpd(){
   if (this->connect(MpdIPAddress, MpdPort)) {
-    resp = getResponse();
-    if (resp.startsWith("TOUT")) {
-      return false;
-    } else {
-      return true;
-    }
+    return getAck();
   }else{
     return false;
   }
@@ -27,6 +24,17 @@ bool MPD::connectMpd(IPAddress ip, uint16_t port){
   return connectMpd();
 }
 
+bool MPD::getAck(){
+  String resp;
+
+  resp = getResponse();
+  if (resp.startsWith("TOUT")) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 // CurrentSong 楽曲情報取得
 CurrentSongStatus MPD::getCurrentSong(){
   // Title            : タイトル
@@ -34,16 +42,15 @@ CurrentSongStatus MPD::getCurrentSong(){
   // Album            : アルバム名
   // Time             : 曲の総時間(秒)
 
-  String resp;
-  String val;
+  String resp = "";
+  String val = "";
   const char command[] = "currentsong";
 
   sendCommand(command);
-  resp = getResponse();
-  val = resp.substring(resp.indexOf(' ')+1);
-  
   while (!resp.startsWith("OK")) {
-    Serial.println(resp);
+    resp = getResponse();
+    val = resp.substring(resp.indexOf(' ')+1);
+
     if (resp.startsWith("Title:")) {
       SongStatus.Title = val;
     } else if (resp.startsWith("Artist:")) {
@@ -55,9 +62,6 @@ CurrentSongStatus MPD::getCurrentSong(){
     } else if (resp.startsWith("TOUT")) {
       sendCommand(command);
     }
-
-    resp = getResponse();
-    val = resp.substring(resp.indexOf(' ')+1);
   }
 
   return SongStatus;
@@ -92,17 +96,16 @@ MPDStatus MPD::getStatus(){
   // song            :  プレイリスト内の曲番号(0始まり)
   // time            :  再生時間:曲の総時間
 
-  String resp;
-  String val;
+  String resp = "";
+  String val = "";
   const char command[] = "status";
 
-  sendCommand(command);
-  resp = getResponse();
-  val = resp.substring(resp.indexOf(' ')+1);
-  
+  sendCommand(command);  
   while (!resp.startsWith("OK")) {
-    Serial.println(resp);
-    if (resp.startsWith("state")) {
+    resp = getResponse();
+    val = resp.substring(resp.indexOf(' ')+1);
+
+    if (resp.startsWith("state:")) {
       MpdStatus.State = toPlayState(val);
     } else if (resp.startsWith("volume:")) {
       MpdStatus.Volume = val.toInt();
@@ -122,16 +125,21 @@ MPDStatus MPD::getStatus(){
     } else if (resp.startsWith("TOUT")) {
       sendCommand(command);
     }
-
-    resp = getResponse();
-    val = resp.substring(resp.indexOf(' ')+1);
   }
 
   return MpdStatus;
 }
 
-void MPD::sendCommand(String cmd){
-  this->println(cmd);
+void MPD::play(){
+  sendCommand("play");
+}
+
+void MPD::pouse(){
+  sendCommand("pause");
+}
+
+void MPD::stop(){
+  sendCommand("stop");
 }
 
 void MPD::setMpdServer(IPAddress ip, uint16_t port){
