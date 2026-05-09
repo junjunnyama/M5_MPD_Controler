@@ -7,11 +7,14 @@
 
 * TFTからM5GFXに移行
   * ライブラリ書き換え
-  * 文字色，背景色の任意変更が未実装
+  * ~~文字色，背景色の任意変更が未実装~~
+    * 実装完了
+  * Canvas（M5GFX）への移行完了
 
 * WiFiの設定について
-  * ルーターが2.4GHz帯で動作していることを確認  
-  ESP32は5GHz帯非対応
+  * ルーターが5GHz帯で動作していることを確認  
+    * ESP32は5GHz帯非対応
+    * 2.4GHz帯のルーター設置
 
 # 参考文献
 ## 日本語表示
@@ -19,4 +22,6 @@
 <https://github.com/tanakamasayuki/efont/tree/master>
 
 ## MPD client
+<https://github.com/MusicPlayerDaemon/mpc/blob/master/doc/index.rst>
+<https://www.musicpd.org/doc/mpc/html/>
 <https://qiita.com/tt-yawata/items/ce34580dd97ede449d9f>
