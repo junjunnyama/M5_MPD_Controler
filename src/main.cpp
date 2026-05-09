@@ -24,7 +24,6 @@
 M5Canvas canvas(&M5.Lcd);
 
 // タイマー用変数
-// hw_timer_t *timer = NULL;
 unsigned long times = 0;
 unsigned long prevtime = 0;
 
@@ -97,6 +96,8 @@ void loop() {
   switch (dir){
     case 0:
       // 楽曲情報表示モード
+      
+      // 再生・停止切り替え
       if (M5.BtnB.wasPressed()){
         switch (mpdStatus.State){
           case Play:
